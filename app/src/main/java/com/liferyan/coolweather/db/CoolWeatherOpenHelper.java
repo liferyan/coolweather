@@ -25,7 +25,7 @@ public class CoolWeatherOpenHelper extends SQLiteOpenHelper {
                     + "city_code text,"
                     + "province_id integer)";
     // County 建表语句
-    private static final String CREATE_COUNTRY =
+    private static final String CREATE_COUNTY =
             "CREATE TABLE County ("
                     + "id integer PRIMARY KEY AUTOINCREMENT,"
                     + "county_name text,"
@@ -42,7 +42,7 @@ public class CoolWeatherOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_PROVINCE);
         db.execSQL(CREATE_CITY);
-        db.execSQL(CREATE_COUNTRY);
+        db.execSQL(CREATE_COUNTY);
     }
 
     @Override

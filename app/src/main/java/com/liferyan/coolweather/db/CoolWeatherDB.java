@@ -86,14 +86,14 @@ public class CoolWeatherDB {
         return cityList;
     }
 
-    public void saveCountry(County county) {
+    public void saveCounty(County county) {
         if (county != null) {
             db.execSQL("INSERT INTO County (county_name,county_code,city_id) VALUES (?,?,?)"
                     , new String[]{county.getCountyName(), county.getCountyCode(), String.valueOf(county.getCityId())});
         }
     }
 
-    public List<County> loadCountries(int cityId) {
+    public List<County> loadCounties(int cityId) {
         List<County> countyList = new ArrayList<>();
         Cursor cursor = db.rawQuery("SELECT * FROM County where city_id = ?"
                 , new String[]{String.valueOf(cityId)});

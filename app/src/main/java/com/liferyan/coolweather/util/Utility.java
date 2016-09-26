@@ -51,7 +51,7 @@ public class Utility {
     }
 
     // 解析和处理服务器返回的县级数据
-    public static boolean handleCountryResponse(CoolWeatherDB db, String response, int cityId) {
+    public static boolean handleCountyResponse(CoolWeatherDB db, String response, int cityId) {
         if (!TextUtils.isEmpty(response)) {
             String[] allCountries = response.split(",");
             if (allCountries != null && allCountries.length > 0) {
@@ -61,7 +61,7 @@ public class Utility {
                     county.setCountyCode(array[0]);
                     county.setCountyName(array[1]);
                     county.setCityId(cityId);
-                    db.saveCountry(county);
+                    db.saveCounty(county);
                 }
                 return true;
             }

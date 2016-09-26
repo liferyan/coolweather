@@ -31,7 +31,7 @@ public class ChooseAreaActivity extends Activity {
 
     private static final int LEVEL_PROVINCE = 0;
     private static final int LEVEL_CITY = 1;
-    private static final int LEVEL_COUNTRY = 2;
+    private static final int LEVEL_COUNTY = 2;
 
     private TextView titleText;
     private ListView listView;
@@ -79,7 +79,7 @@ public class ChooseAreaActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (currentLevel == LEVEL_COUNTRY)
+        if (currentLevel == LEVEL_COUNTY)
             queryCities();
         else if (currentLevel == LEVEL_CITY)
             queryProvinces();
@@ -89,7 +89,7 @@ public class ChooseAreaActivity extends Activity {
 
     // 查询全国所有的县,优先从数据库中查询,如果没有则到服务器上查询
     private void queryCountries() {
-        countyList = db.loadCountries(selectedCity.getId());
+        countyList = db.loadCounties(selectedCity.getId());
         if (countyList.size() > 0) {
             dataList.clear();
             for (County county : countyList)
@@ -97,7 +97,7 @@ public class ChooseAreaActivity extends Activity {
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
             titleText.setText(selectedCity.getCityName());
-            currentLevel = LEVEL_COUNTRY;
+            currentLevel = LEVEL_COUNTY;
         } else {
             queryFromServer(selectedCity.getCityCode(), "county");
         }
@@ -151,7 +151,7 @@ public class ChooseAreaActivity extends Activity {
                 } else if ("city".equals(type)) {
                     result = Utility.handleCityResponse(db, response, selectedProvince.getId());
                 } else if ("county".equals(type)) {
-                    result = Utility.handleCountryResponse(db, response, selectedCity.getId());
+                    result = Utility.handleCountyResponse(db, response, selectedCity.getId());
                 }
                 if (result) {
                     runOnUiThread(new Runnable() {
