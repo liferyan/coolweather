@@ -24,12 +24,12 @@ public class CoolWeatherOpenHelper extends SQLiteOpenHelper {
                     + "city_name text,"
                     + "city_code text,"
                     + "province_id integer)";
-    // Country 建表语句
+    // County 建表语句
     private static final String CREATE_COUNTRY =
-            "CREATE TABLE Country ("
+            "CREATE TABLE County ("
                     + "id integer PRIMARY KEY AUTOINCREMENT,"
-                    + "country_name text,"
-                    + "country_code text,"
+                    + "county_name text,"
+                    + "county_code text,"
                     + "city_id integer)";
 
 
