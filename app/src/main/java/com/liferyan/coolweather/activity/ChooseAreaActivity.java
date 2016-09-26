@@ -70,7 +70,7 @@ public class ChooseAreaActivity extends Activity {
                     queryCities();
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
-                    queryCountries();
+                    queryCounties();
                 }
             }
         });
@@ -88,7 +88,7 @@ public class ChooseAreaActivity extends Activity {
     }
 
     // 查询全国所有的县,优先从数据库中查询,如果没有则到服务器上查询
-    private void queryCountries() {
+    private void queryCounties() {
         countyList = db.loadCounties(selectedCity.getId());
         if (countyList.size() > 0) {
             dataList.clear();
@@ -162,7 +162,7 @@ public class ChooseAreaActivity extends Activity {
                             else if ("city".equals(type))
                                 queryCities();
                             else if ("county".equals(type))
-                                queryCountries();
+                                queryCounties();
                         }
                     });
                 }

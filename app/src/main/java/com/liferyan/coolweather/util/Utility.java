@@ -53,9 +53,9 @@ public class Utility {
     // 解析和处理服务器返回的县级数据
     public static boolean handleCountyResponse(CoolWeatherDB db, String response, int cityId) {
         if (!TextUtils.isEmpty(response)) {
-            String[] allCountries = response.split(",");
-            if (allCountries != null && allCountries.length > 0) {
-                for (String c : allCountries) {
+            String[] allCounties = response.split(",");
+            if (allCounties != null && allCounties.length > 0) {
+                for (String c : allCounties) {
                     String[] array = c.split("\\|");
                     County county = new County();
                     county.setCountyCode(array[0]);
