@@ -1,7 +1,8 @@
-package com.liferyan.coolweather.activity;
+package com.liferyan.coolweather.app;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.liferyan.coolweather.db.CoolWeatherDB;
 import com.liferyan.coolweather.model.City;
 import com.liferyan.coolweather.model.County;
 import com.liferyan.coolweather.model.Province;
+import com.liferyan.coolweather.util.Constants;
 import com.liferyan.coolweather.util.HttpCallbackListener;
 import com.liferyan.coolweather.util.HttpUtil;
 import com.liferyan.coolweather.util.Utility;
@@ -28,7 +30,7 @@ import java.util.List;
  * Created by Ryan on 16/9/26.
  */
 
-public class ChooseAreaActivity extends Activity {
+public class ChooseAreaActivity extends Activity implements Constants {
 
     private static final int LEVEL_PROVINCE = 0;
     private static final int LEVEL_CITY = 1;
@@ -72,6 +74,8 @@ public class ChooseAreaActivity extends Activity {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
+                } else if (currentLevel == LEVEL_COUNTY) {
+                    queryWeather(countyList.get(position).getCountyCode());
                 }
             }
         });
@@ -88,13 +92,13 @@ public class ChooseAreaActivity extends Activity {
         else if (currentLevel == LEVEL_CITY)
             queryProvinces();
         else
-            finish();
+            super.onBackPressed();
     }
 
     private void showProgressDialog() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage("Loading ...");
+            progressDialog.setMessage(getString(R.string.loading));
             progressDialog.setCanceledOnTouchOutside(false);
         }
         progressDialog.show();
@@ -114,10 +118,10 @@ public class ChooseAreaActivity extends Activity {
                 dataList.add(province.getProvinceName());
             adapter.notifyDataSetChanged();
             listView.setSelection(0);
-            titleText.setText("中国");
+            titleText.setText(R.string.china);
             currentLevel = LEVEL_PROVINCE;
         } else {
-            queryFromServer(null, "province");
+            queryFromServer(null, PROVINCE);
         }
     }
 
@@ -133,7 +137,7 @@ public class ChooseAreaActivity extends Activity {
             titleText.setText(selectedProvince.getProvinceName());
             currentLevel = LEVEL_CITY;
         } else {
-            queryFromServer(selectedProvince.getProvinceCode(), "city");
+            queryFromServer(selectedProvince.getProvinceCode(), CITY);
         }
     }
 
@@ -149,8 +153,12 @@ public class ChooseAreaActivity extends Activity {
             titleText.setText(selectedCity.getCityName());
             currentLevel = LEVEL_COUNTY;
         } else {
-            queryFromServer(selectedCity.getCityCode(), "county");
+            queryFromServer(selectedCity.getCityCode(), COUNTY);
         }
+    }
+
+    private void queryWeather(String countyCode) {
+        queryFromServer(countyCode, WEATHER);
     }
 
     private void queryFromServer(String code, final String type) {
@@ -163,26 +171,38 @@ public class ChooseAreaActivity extends Activity {
         showProgressDialog();
         HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
             @Override
-            public void onFinished(String response) {
+            public void onFinished(final String response) {
                 boolean result = false;
-                if ("province".equals(type)) {
+                if (PROVINCE.equals(type)) {
                     result = Utility.handleProvinceResponse(db, response);
-                } else if ("city".equals(type)) {
+                } else if (CITY.equals(type)) {
                     result = Utility.handleCityResponse(db, response, selectedProvince.getId());
-                } else if ("county".equals(type)) {
+                } else if (COUNTY.equals(type)) {
                     result = Utility.handleCountyResponse(db, response, selectedCity.getId());
+                } else if (WEATHER.equals(type)) {
+                    result = true;
                 }
                 if (result) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             closeProgressDialog();
-                            if ("province".equals(type))
+                            if (PROVINCE.equals(type))
                                 queryProvinces();
-                            else if ("city".equals(type))
+                            else if (CITY.equals(type))
                                 queryCities();
-                            else if ("county".equals(type))
+                            else if (COUNTY.equals(type))
                                 queryCounties();
+                            else if (WEATHER.equals(type)) {
+                                String[] array = response.split("\\|");
+                                if (array.length == 2) {
+                                    String weatherCode = array[1];
+                                    Intent intent = new Intent();
+                                    intent.putExtra(WEATHER_CODE, weatherCode);
+                                    setResult(RESULT_OK, intent);
+                                    finish();
+                                }
+                            }
                         }
                     });
                 }
@@ -194,7 +214,7 @@ public class ChooseAreaActivity extends Activity {
                     @Override
                     public void run() {
                         closeProgressDialog();
-                        Toast.makeText(ChooseAreaActivity.this, "Network Error,Load Failed!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChooseAreaActivity.this, getString(R.string.network_error), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
