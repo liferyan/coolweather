@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">欧酷天气</string>
+    <string name="refresh">刷新</string>
+    <string name="title">天气预报</string>
+    <string name="network_error">网络出错! 请检查连接</string>
+    <string name="daily_title">未来7天预报</string>
+    <string name="loading">数据加载中…</string>
+    <string name="china">中国</string>
+    <string name="suggestion">今日指数</string>
+    <string name="comf">舒适:</string>
+    <string name="drsg">穿衣:</string>
+    <string name="flu">感冒:</string>
+    <string name="sport">运动:</string>
+    <string name="trav">旅游:</string>
+    <string name="uv">紫外线:</string>
 </resources>
